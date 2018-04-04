@@ -7,8 +7,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.IntentCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.Locale;
@@ -30,7 +30,11 @@ public class OpenATHM {
         purchaseInfo.setItemsSelectedList(Items);
         String businessInfoJson =  JsonUtil.toJason(purchaseInfo);
         Log.d("Created JSON", businessInfoJson);
-        openAthmApp(context,businessInfoJson);
+        if(businessInfoJson != null) {
+            openAthmApp(context, businessInfoJson);
+        }else {
+            Toast.makeText(context,"Error creating json returned value equals null", Toast.LENGTH_LONG).show();
+        }
     }
 
     private static void openAthmApp(@NonNull Context context, @NonNull String json){
@@ -70,7 +74,7 @@ public class OpenATHM {
         intent.putExtra(APP_BUNDLE_ID_KEY,context.getPackageName());
         intent.putExtra(JSON_DATA_KEY, json);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
