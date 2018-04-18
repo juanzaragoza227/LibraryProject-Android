@@ -10,34 +10,44 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class OpenATHM {
 
-    public static void  execute(@NonNull Context context, @NonNull String BusinessToken, @Nullable Double Subtotal, @Nullable Double Tax,
+    public static void  validate(@NonNull Context context, @NonNull String BusinessToken, @Nullable Double Subtotal, @Nullable Double Tax,
                                 @NonNull Double Total, @Nullable List<ItemsSelected> Items)
     {
-        PurchaseInfo purchaseInfo = new PurchaseInfo();
-        purchaseInfo.setBusinessToken(BusinessToken);
-        if(Subtotal != null) {
-            purchaseInfo.setSubtotal(String.format(Locale.US, "%.2f", Subtotal));
-        }
-        if(Tax != null) {
-            purchaseInfo.setTax(String.format(Locale.US, "%.2f", Tax));
-        }
-        purchaseInfo.setTotal(String.format(Locale.US,"%.2f",Total));
-        purchaseInfo.setItemsSelectedList(Items);
-        String businessInfoJson =  JsonUtil.toJason(purchaseInfo);
-        Log.d("Created JSON", businessInfoJson);
-        if(businessInfoJson != null) {
-            openAthmApp(context, businessInfoJson);
-        }else {
-            Toast.makeText(context,"Error creating json returned value equals null", Toast.LENGTH_LONG).show();
+        if (context != null && BusinessToken != null && !BusinessToken.isEmpty() && Total != null ) {
+            List<ItemsSelected> itemsSelectedList = new ArrayList<>();
+            PurchaseInfo purchaseInfo = new PurchaseInfo();
+            purchaseInfo.setBusinessToken(BusinessToken);
+            if (Subtotal != null) {
+                purchaseInfo.setSubtotal(String.format(Locale.US, "%.2f", Subtotal));
+            }
+            if (Tax != null) {
+                purchaseInfo.setTax(String.format(Locale.US, "%.2f", Tax));
+            }
+            if (Items == null) {
+                purchaseInfo.setItemsSelectedList(itemsSelectedList);
+            } else {
+                purchaseInfo.setItemsSelectedList(Items);
+            }
+            purchaseInfo.setTotal(String.format(Locale.US, "%.2f", Total));
+            String businessInfoJson = JsonUtil.toJason(purchaseInfo);
+            //Log.d("Created JSON", businessInfoJson);
+            if (businessInfoJson != null) {
+                execute(context, businessInfoJson);
+            }else {
+                throw new NullPointerException();
+            }
+        } else {
+            throw new NullPointerException();
         }
     }
 
-    private static void openAthmApp(@NonNull Context context, @NonNull String json){
+     private static void execute(@NonNull Context context, @NonNull String json){
         // ATHM APP bundle Id
         // if needed here you could add the (.debug), (.qa) and (.piloto) at the end to test
         // in the different build variants of the project.
@@ -61,7 +71,7 @@ public class OpenATHM {
             athmInfo = context.getPackageManager().getPackageInfo(ATHM_ID ,0);
             athmVersionCode = athmInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+            Log.e("PackageInfo", e.getMessage());
         }
 
         // Validating that the ATHM app was found and the versioncode is valid
@@ -77,5 +87,4 @@ public class OpenATHM {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
-
 }
