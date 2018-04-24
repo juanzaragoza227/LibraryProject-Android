@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 
 public class PayButton extends AppCompatImageButton {
 
-    ButtonStyle selectedStyle = ButtonStyle.ORIGINAL;
+    private ButtonStyle selectedStyle = ButtonStyle.ORIGINAL;
 
     private enum ButtonStyle{
         ORIGINAL, LIGHT, DARK

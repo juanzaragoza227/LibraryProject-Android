@@ -15,6 +15,6 @@ public class MainActivity extends AppCompatActivity {
 
     //Use the class of your layout to implement this method
     public void OnClickPayWithATHM(View view) {
-        OpenATHM.validate(this,"4444",null,null,1.00,null);
+        OpenATHM.validate(this,"4444",1.00,"123456-654321",null,null, null);
     }
 }

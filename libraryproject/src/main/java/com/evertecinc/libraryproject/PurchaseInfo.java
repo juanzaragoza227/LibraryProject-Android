@@ -1,5 +1,6 @@
 package com.evertecinc.libraryproject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ public class PurchaseInfo {
     private String subtotal;
     private String tax;
     private String total;
-    private List<ItemsSelected> itemsSelectedList;
+    private List<ItemsSelected> itemsSelectedList =  new ArrayList<>();
 
 
     public String getBusinessToken() {return businessToken;}
